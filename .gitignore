@@ -27,3 +27,7 @@ node_modules
 
 # Ignore .DS_Store files on OS X
 .DS_Store
+
+# VIM
+*.swp
+*.un~

@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#
+#  Simple getting started Vagrant Template for a Standard Single App Machine
+#  This vagrant file is symlink from project root, so all paths operate under that assumption
+#  Terrible things will happen if you try to vagrant up using this file within the `conf/` directory
+#
+#
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box = "ubuntu/precise64"
+
+  config.vm.define "<%= utils.slug(projectName) %>" do |app|
+    app.vm.provider "virtualbox" do |v|
+      v.memory = 512
+      v.cpus = 1
+    end
+    app.vm.network "private_network", ip: "192.168.159.27"
+    app.vm.network "forwarded_port", guest: 22, host: 2700 # SSH
+    app.vm.network "forwarded_port", guest: 6379, host: 6387 # Redis
+    # guest:2017 is required based on the dockerfile/image used
+    # can adjust the host machines 27010 port to whatever
+    app.vm.network "forwarded_port", guest: 27017, host: 27027 # MongoDB
+
+    # sync our root app to vagrant sync as the keystone-app
+    app.vm.synced_folder "./", "/vsync/keystone-app/"
+    # syncing if theming is enabled
+    # app.vm.synced_folder "../keystone-themes/", "/vsync/keystone-themes"
+
+    # run a local shell configuration script
+    app.vm.provision "shell", run: "always", path: "./confs/vagrant-bootstrap.sh"
+
+    app.vm.provision "docker", run: "always" do |d|
+
+      # Run Redis
+      d.run "redis", args: "-i -t -d --privileged -p 6379:6379 --name redis", cmd: "redis-server"
+
+      # Run MongoDB
+      # DO NOT BE MISTAKEN THESE PORTS CANNOT CHANGE
+      # dockerfile/mongodb image is built to use 27017 with no param overrides
+      d.run "dockerfile/mongodb", args: "-d -p 27017:27017 --name mongodb"
+
+    end
+
+  end
+
+end
+
