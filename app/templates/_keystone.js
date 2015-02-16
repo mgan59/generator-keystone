@@ -3,11 +3,12 @@
 require('dotenv').load();
 
 // Require keystone
-var keystone = require('keystone');<% if (viewEngine == 'hbs') { %>
-var handlebars = require('express-handlebars');<% } else if (viewEngine == 'swig') { %>
-var swig = require('swig');<% } else if (viewEngine == 'nunjucks') { %>
+var keystone = require('keystone')<% if (viewEngine == 'hbs') { %>;
+var handlebars = require('express-handlebars')<% } else if (viewEngine == 'swig') { %>;
+var swig = require('swig')<% } else if (viewEngine == 'react') { %>;
+var react = require('express-react-views')<% } else if (viewEngine == 'nunjucks') { %>;
 var cons = require('consolidate');
-var nunjucks = require('nunjucks');<% } %>
+var nunjucks = require('nunjucks')<% } %>;
 <% if (viewEngine == 'swig') { %>
 // Disable swig's bulit-in template caching, express handles it
 swig.setDefaults({ cache: false });
@@ -28,9 +29,16 @@ keystone.init({
 	'stylus': 'public',
 	<% } %>'static': 'public',
 	'favicon': 'public/favicon.ico',
-	'views': 'templates/views',<% if (viewEngine === 'nunjucks') { %>
+	<% if (viewEngine === 'react') { %>
+	'views': 'templates/components',
+	<% } else { %>
+	'views': 'templates/views',
+	<% } %><% if (viewEngine === 'nunjucks') { %>
 	'view engine': 'html',
 	'custom engine': cons.nunjucks,
+	<% } else if (viewEngine === 'react') { %>
+	'view engine': 'jsx',
+	'custom engine': react.createEngine(),
 	<% } else { %>
 	'view engine': '<%= viewEngine %>',
 	<% } %><% if (viewEngine === 'hbs') { %>
