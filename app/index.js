@@ -475,3 +475,9 @@ KeystoneGenerator.prototype.files = function files() {
 	}
 	
 };
+
+KeystoneGenerator.prototype.vagrant = function vagrant() {
+	// templatize the Vagrant and bootstrap files
+	this.template('confs/_Vagrantfile', 'Vagrantfile');
+	this.template('confs/_vagrant-bootstrap.sh', 'confs/vagrant-bootstrap.sh');
+};
