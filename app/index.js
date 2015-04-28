@@ -398,14 +398,87 @@ KeystoneGenerator.prototype.templates = function templates() {
 		
 	} else if (this.viewEngine === 'react') {
 		
+		// Create React Templates Directories
+		/**
+		├── components
+		│   ├── elements
+		│   ├── pages
+		│   └── views
+		├── constants
+		└── mixins
+
+
+-rw-rw-r--   1 morgancraft  staff  1441 Apr 14 08:37 PostExcerpt.jsx
+-rw-rw-r--   1 morgancraft  staff  1432 Apr 14 08:37 PostFull.jsx
+		*/
 		this.mkdir('templates');
 		this.mkdir('templates/components');
+		this.mkdir('templates/components/elements');
+		this.mkdir('templates/components/pages');
+		this.mkdir('templates/components/views');
+		this.mkdir('templates/constants');
+		this.mkdir('templates/mixins');
 
-		// need a layout.jsx which is shell
-		//this.copy('templates/default-react/components/layout.jsx', 'templates/default-react/components/layout.jsx');
-		this.directory('templates/default-react/components', 'templates/components');
-		// then index.jsx should contain the jumbotron component
-		// fill out remaining apps/sections
+		// not app/section specific so copy entire folder contents
+		this.directory('templates/default-react/constants', 'templates/constants');
+		this.directory('templates/default-react/mixins', 'templates/mixins');
+		
+		// All App specific components are contained in the `components` folder
+		// create stubs for paths
+		var srcPath = 'templates/default-' + this.viewEngine + '/components/';
+		var destPath = 'templates/components/';
+		
+		// copy all the required/shared components
+		// need a layout.jsx which is shell for all pages
+		this.copy(srcPath + 'layout.jsx', destPath + 'layout.jsx');
+		// shared components and base layer
+		this.copy(srcPath + 'elements' + '/Jumbotron.jsx', destPath + 'elements' + '/Jumbotron.jsx');
+		this.copy(srcPath + 'elements' + '/NavItem.jsx', destPath + 'elements' + '/NavItem.jsx');
+		this.copy(srcPath + 'elements' + '/BlockLine.jsx', destPath + 'elements' + '/BlockLink.jsx');
+		this.copy(srcPath + 'elements' + '/InlineLine.jsx', destPath + 'elements' + '/InlineLink.jsx');
+		this.copy(srcPath + 'elements' + '/Pagination.jsx', destPath + 'elements' + '/Pagination.jsx');
+		this.copy(srcPath + 'elements' + '/PaginationButton.jsx', destPath + 'elements' + '/PaginationButton.jsx');
+		// FlashMessage could be globally used for contact/gallery?
+		this.copy(srcPath + 'elements' + '/FlashMessages.jsx', destPath + 'elements' + '/FlashMessages.jsx');
+		this.copy(srcPath + 'elements' + '/FlashMessage.jsx', destPath + 'elements' + '/FlashMessage.jsx');
+
+		// handle component copying for each app
+		if (this.includeBlog) {
+			// for blog we need both views [blog,post]
+			// views are where express handsoff the template context/vars to react-engine
+			this.copy(srcPath + 'views' + '/blog.jsx', destPath + 'views' + '/blog.jsx');
+			this.copy(srcPath + 'views' + '/post.jsx', destPath + 'views' + '/post.jsx');
+			// pages is the component container to handle what component-elements are loaded
+			// for blog we use the Posts page, but for a single Post we can mount the element directly
+			// into the views/post.jsx
+			this.copy(srcPath + 'pages' + '/Posts.jsx', destPath + 'pages' + '/Posts.jsx');
+			// copy all the necessary component/elements required for blog/posts
+			this.copy(srcPath + 'elements' + '/AuthorByLine.jsx', destPath + 'elements' + '/AuthorByLine.jsx');
+			this.copy(srcPath + 'elements' + '/CategoryBlockLinkList.jsx', destPath + 'elements' + '/CategoryBlockLinkList.jsx');
+			this.copy(srcPath + 'elements' + '/CategoryInlineLinkList.jsx', destPath + 'elements' + '/CategoryInlineLinkList.jsx');
+			this.copy(srcPath + 'elements' + '/PostExcerpt.jsx', destPath + 'elements' + '/PostExcerpt.jsx');
+			this.copy(srcPath + 'elements' + '/PostFull.jsx', destPath + 'elements' + '/PostFull.jsx');
+		}
+		
+		if (this.includeGallery) {
+			// copy only gallery templates (view/pages)
+			// views are where express handsoff the template context/vars to react-engine
+			this.copy(srcPath + 'views' + '/gallery.jsx', destPath + 'views' + '/gallery.jsx');
+			// pages is the component container to handle what component-elements are loaded
+			this.copy(srcPath + 'pages' + '/Gallery.jsx', destPath + 'pages' + '/Gallery.jsx');
+		}
+		
+		if (this.includeEnquiries) {
+			// copy only contact templates (pages)
+			// views are where express handsoff the template context/vars to react-engine
+			this.copy(srcPath + 'views' + '/contact.jsx', destPath + 'views' + '/contact.jsx');
+			// pages is the component container to handle what component-elements are loaded
+			this.copy(srcPath + 'pages' + '/ContactForm.jsx', destPath + 'pages' + '/ContactForm.jsx');
+			if (this.includeEmail) {
+				// TODO Add this into template
+				// need template txt
+			}
+		}
 
 	} else if (this.viewEngine === 'nunjucks') {
 		
