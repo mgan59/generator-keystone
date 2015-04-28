@@ -30,7 +30,7 @@ keystone.init({
 	<% } %>'static': 'public',
 	'favicon': 'public/favicon.ico',
 	<% if (viewEngine === 'react') { %>
-	'views': 'templates/components',
+	'views': 'templates/components/views',
 	<% } else { %>
 	'views': 'templates/views',
 	<% } %><% if (viewEngine === 'nunjucks') { %>
