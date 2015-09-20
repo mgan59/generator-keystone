@@ -433,17 +433,22 @@ KeystoneGenerator.prototype.templates = function templates() {
 
 		// copy all the required/shared components
 		// need a layout.jsx which is shell for all pages
-		this.copy(srcPath + 'layout.jsx', destPath + 'layout.jsx');
+		this.copy(srcPath + 'layouts/layout.jsx', destPath + 'layouts/layout.jsx');
 		// shared components and base layer
 		this.copy(srcPath + 'elements' + '/Jumbotron.jsx', destPath + 'elements' + '/Jumbotron.jsx');
 		this.copy(srcPath + 'elements' + '/NavItem.jsx', destPath + 'elements' + '/NavItem.jsx');
-		this.copy(srcPath + 'elements' + '/BlockLine.jsx', destPath + 'elements' + '/BlockLink.jsx');
-		this.copy(srcPath + 'elements' + '/InlineLine.jsx', destPath + 'elements' + '/InlineLink.jsx');
+		this.copy(srcPath + 'elements' + '/BlockLink.jsx', destPath + 'elements' + '/BlockLink.jsx');
+		this.copy(srcPath + 'elements' + '/InlineLink.jsx', destPath + 'elements' + '/InlineLink.jsx');
 		this.copy(srcPath + 'elements' + '/Pagination.jsx', destPath + 'elements' + '/Pagination.jsx');
 		this.copy(srcPath + 'elements' + '/PaginationButton.jsx', destPath + 'elements' + '/PaginationButton.jsx');
 		// FlashMessage could be globally used for contact/gallery?
 		this.copy(srcPath + 'elements' + '/FlashMessages.jsx', destPath + 'elements' + '/FlashMessages.jsx');
 		this.copy(srcPath + 'elements' + '/FlashMessage.jsx', destPath + 'elements' + '/FlashMessage.jsx');
+
+		// copy index for the view layer (required for all views to work)
+		this.copy(srcPath + 'views' + '/index.jsx', destPath + 'views' + '/index.jsx');
+		// home page is required by default
+		this.copy(srcPath + 'pages' + '/home.jsx', destPath + 'pages' + '/home.jsx');
 
 		// handle component copying for each app
 		if (this.includeBlog) {
@@ -468,7 +473,7 @@ KeystoneGenerator.prototype.templates = function templates() {
 			// views are where express handsoff the template context/vars to react-engine
 			this.copy(srcPath + 'views' + '/gallery.jsx', destPath + 'views' + '/gallery.jsx');
 			// pages is the component container to handle what component-elements are loaded
-			this.copy(srcPath + 'pages' + '/Gallery.jsx', destPath + 'pages' + '/Gallery.jsx');
+			this.copy(srcPath + 'pages' + '/gallery.jsx', destPath + 'pages' + '/gallery.jsx');
 		}
 
 		if (this.includeEnquiries) {
